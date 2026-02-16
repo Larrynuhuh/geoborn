@@ -1,6 +1,7 @@
 import jax
 import jax.numpy as jnp
 
+@jax.jit
 def points(x, y):
 
     u, v = jnp.meshgrid(x, y)
@@ -9,9 +10,15 @@ def points(x, y):
 
     return c
 
-def centroid(p):
+@jax.jit
+def line(p1, p2, t):
 
-    pass
+    l = p1 + (t * (p2 - p1))
+    line = l.reshape(-1, 2)
+
+    return line
+
+
 
 
 
