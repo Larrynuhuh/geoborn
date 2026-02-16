@@ -11,14 +11,21 @@ def points(x, y):
     return c
 
 @jax.jit
-def line(p1, p2, t):
+def line(p1, p2):
+    t = jnp.linspace(0, 1, 1_000)
 
     l = p1 + (t * (p2 - p1))
     line = l.reshape(-1, 2)
 
     return line
 
+def line_len(l):
+    
+    diff = jnp.diff(l, axis = 0)
+    lens = jnp.linalg.norm(diff, axis = 1)
+    sums = jnp.sum(lens)
 
+    return sums
 
 
 
