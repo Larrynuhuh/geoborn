@@ -19,6 +19,7 @@ def line(p1, p2):
 
     return line
 
+@jax.jit
 def line_len(l):
     
     diff = jnp.diff(l, axis = 0)
@@ -26,6 +27,3 @@ def line_len(l):
     sums = jnp.sum(lens)
 
     return sums
-
-
-
