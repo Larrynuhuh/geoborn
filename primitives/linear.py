@@ -19,11 +19,3 @@ def line(p1, p2):
 
     return line
 
-@jax.jit
-def line_len(l):
-    
-    diff = jnp.diff(l, axis = 0)
-    lens = jnp.linalg.norm(diff, axis = 1)
-    sums = jnp.sum(lens)
-
-    return sums
