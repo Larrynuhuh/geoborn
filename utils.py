@@ -1,11 +1,8 @@
 import jax
 import jax.numpy as jnp
 
-jax.config.update("jax_enable_x64", True)
+def div(a, b):
+    safe = denominator != 0
+    den = jnp.where(safe, b, 1.0)
 
-EPSILON = 1e-12
-
-DTYPE = jnp.float64
-
-def geodist():
-    pass
+    return jnp.where(safe, a/den, 0.0)

@@ -11,11 +11,12 @@ def points(*dimens):
     return c
 
 @jax.jit
-def line(p1, p2):
-    t = jnp.linspace(0, 1, 1_000)
+def line(p1, p2, segs):
+    t = jnp.linspace(0, 1, segs)[:, jnp.newaxis]
 
     l = p1 + (t * (p2 - p1))
-    line = l.reshape(-1, 2)
 
-    return line
+    return l
+
+vline = jax.vmap(line)
 

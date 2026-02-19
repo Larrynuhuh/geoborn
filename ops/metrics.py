@@ -14,3 +14,31 @@ def midp(p1, p2):
 
 vmidp = jax.vmap(midp)
 
+
+# to check distance of point from line
+
+@jax.jit
+def segdist(f, g, pt):
+    v = g-f
+    w = pt-f
+    t = us.div(jnp.dot(w,v),jnp.dot(v,v))
+    tc = jnp.clip(t, 0, 1)
+
+    cp = f + tc * v
+    dist = jnp.linalg.norm(pt - cp)
+
+    return dist
+
+import utils as us
+from utils import div
+
+# USER CALLS PLDIST
+@jax.jit
+def pldist(l, pt):
+    a = l[:-1]
+    b = l[1:]
+
+    curve_dist = jax.vmap(segdist, in_axes = (0, 0, None))
+    summed = curve_dist(a, b, pt)
+
+    return jnp.min(summed)
