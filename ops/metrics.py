@@ -16,6 +16,7 @@ vmidp = jax.vmap(midp)
 
 
 # to check distance of point from line
+import utils as us
 
 @jax.jit
 def segdist(f, g, pt):
@@ -28,9 +29,6 @@ def segdist(f, g, pt):
     dist = jnp.linalg.norm(pt - cp)
 
     return dist
-
-import utils as us
-from utils import div
 
 # USER CALLS PLDIST
 @jax.jit
