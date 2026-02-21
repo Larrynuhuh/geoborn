@@ -1,3 +1,7 @@
+import utils as us
+import jax 
+import jax.numpy as jnp
+
 @jax.jit
 def linlen(l):
     
@@ -40,3 +44,6 @@ def pldist(l, pt):
     summed = curve_dist(a, b, pt)
 
     return jnp.min(summed)
+
+
+vpldist = jax.vmap(pldist)
