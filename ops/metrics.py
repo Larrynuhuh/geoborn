@@ -20,7 +20,6 @@ vmidp = jax.vmap(midp)
 
 
 # to check distance of point from line
-import utils as us
 
 @jax.jit
 def segdist(f, g, pt):

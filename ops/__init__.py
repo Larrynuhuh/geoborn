@@ -1,2 +1,4 @@
-from .metrics import (line_len, midp, vmidp, pldist, vpldist, normal, vnormal
+from .metrics import (line_len, midp, vmidp, pldist, vpldist
 )
+
+from .vectors import (normal, vnormal)

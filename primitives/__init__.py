@@ -1,1 +1,2 @@
-from .linear import (points, line, vline, bounds)
+from .linear import (points, line, vline)
+from .voluminous import (bounds)
