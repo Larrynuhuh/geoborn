@@ -1,3 +1,4 @@
+
 import utils as us
 import jax 
 import jax.numpy as jnp
@@ -15,3 +16,7 @@ def normal(basis):
     return us.div(nrm, (jnp.linalg.norm(nrm) + us.eps))
 
 vnormal = jax.vmap(normal)
+
+
+
+
