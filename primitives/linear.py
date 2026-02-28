@@ -1,4 +1,4 @@
-import utils as us
+import geoutils as us
 import jax 
 import jax.numpy as jnp
 
@@ -28,3 +28,12 @@ def polyline(pl):
     c = jnp.stack([a, b], axis = 1)
 
     return c
+
+
+pts = jnp.array([[0.0, 10.0], [5.0, 0.0], [10.0, 10.0]])
+segments = geo.polyline(pts)
+ship = jnp.array([5.0, 5.0])
+
+d = geo.pldist(segments, ship)
+
+print("distance to v tip: {d}")
