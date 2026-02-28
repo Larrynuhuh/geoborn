@@ -13,10 +13,39 @@ def normal(basis):
 
     check = jnp.dot(normal, center)
     nrm = jnp.where(check < 0, -normal, normal)
-    return us.div(nrm, (jnp.linalg.norm(nrm) + us.eps))
+    return us.div(nrm, (jnp.linalg.norm(nrm)))
 
 vnormal = jax.vmap(normal)
 
+#dot product territory
+
+def project_scalar(a, b): 
+    
+    norm = jnp.linalg.norm(b)
+    prod = jnp.dot(a, b)/norm
+
+    return prod
+
+scalproj = jax.vmap(project_scalar)
+
+def project_vector(a, b):
+
+    norm = jnp.linalg.norm(b)
+    prod = jnp.dot(a, b)/norm
+    term = b/norm
+    proj = prod * term
+
+    return proj
+
+vectproj = jax.vmap(project_vector)
 
 
+def reject_vector(a, b):
+
+    proj = project_vector(a, b)
+    reject = a - proj
+
+    return reject
+
+rejvect = jax.vmap(reject_vector)
 
