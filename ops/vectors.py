@@ -22,22 +22,22 @@ vnormal = jax.jit(jax.vmap(normal))
 def project_scalar(a, b): 
     
     norm = jnp.linalg.norm(b)
-    prod = jnp.dot(a, b)/norm
+    prod = us.div(jnp.dot(a, b), norm)
 
     return prod
 
-scalproj = jax.jit(jax.vmap(project_scalar))
+scalproj = jax.jit(jax.vmap(project_scalar, in_axes = (0, 0)))
 
 def project_vector(a, b):
 
     norm = jnp.linalg.norm(b)
-    prod = jnp.dot(a, b)/norm
-    term = b/norm
+    prod = us.div(jnp.dot(a, b), norm)
+    term = us.div(b, norm)
     proj = prod * term
 
     return proj
 
-vectproj = jax.jit(jax.vmap(project_vector))
+vectproj = jax.jit(jax.vmap(project_vector, in_axes = (0, 0)))
 
 
 def reject_vector(a, b):
@@ -47,5 +47,4 @@ def reject_vector(a, b):
 
     return reject
 
-rejvect = jax.jit(jax.vmap(reject_vector))
-
+rejvect = jax.jit(jax.vmap(reject_vector, in_axes = (0, 0)))

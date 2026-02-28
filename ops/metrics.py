@@ -45,4 +45,6 @@ def pldist(l, pt):
     return jnp.min(summed)
 
 
-vpldist = jax.vmap(pldist)
+vpldist = jax.vmap(pldist, in_axes = (None, 0))
+
+
