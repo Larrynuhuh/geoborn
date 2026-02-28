@@ -21,3 +21,10 @@ def line(p1, p2, segs):
 
 vline = jax.vmap(line)
 
+@jax.jit
+def polyline(pl):
+    a = pl[:-1]
+    b = pl[1:]
+    c = jnp.stack([a, b], axis = 1)
+
+    return c

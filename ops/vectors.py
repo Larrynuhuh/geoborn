@@ -15,7 +15,7 @@ def normal(basis):
     nrm = jnp.where(check < 0, -normal, normal)
     return us.div(nrm, (jnp.linalg.norm(nrm)))
 
-vnormal = jax.vmap(normal)
+vnormal = jax.jit(jax.vmap(normal))
 
 #dot product territory
 
@@ -26,7 +26,7 @@ def project_scalar(a, b):
 
     return prod
 
-scalproj = jax.vmap(project_scalar)
+scalproj = jax.jit(jax.vmap(project_scalar))
 
 def project_vector(a, b):
 
@@ -37,7 +37,7 @@ def project_vector(a, b):
 
     return proj
 
-vectproj = jax.vmap(project_vector)
+vectproj = jax.jit(jax.vmap(project_vector))
 
 
 def reject_vector(a, b):
@@ -47,5 +47,5 @@ def reject_vector(a, b):
 
     return reject
 
-rejvect = jax.vmap(reject_vector)
+rejvect = jax.jit(jax.vmap(reject_vector))
 
