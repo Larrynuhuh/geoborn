@@ -3,7 +3,7 @@ import jax
 import jax.numpy as jnp
 from geoutils import Vector, Matrix, Scalar, Tensor
 
-@jax.jit
+@jax.jit(static_argnums = (0,))
 def points(*dimens: int) -> Matrix: 
 
     state = jnp.meshgrid(*dimens, indexing = 'ij')
@@ -12,7 +12,7 @@ def points(*dimens: int) -> Matrix:
 
     return c
 
-@jax.jit
+@jax.jit(static_argnums = (2,))
 def line(p1: Vector, p2: Vector, segs: int) -> Matrix:
     t = jnp.linspace(0, 1, segs)[:, jnp.newaxis]
 
@@ -20,7 +20,9 @@ def line(p1: Vector, p2: Vector, segs: int) -> Matrix:
 
     return l
 
-vline = jax.jit(jax.vmap(line, in_axes = (0, 0, None)))
+@jax.jit(static_argnums = (2,))
+def vline(p1: Matrix, p2: Matrix, segs: int) -> Tensor:
+    return jax.vmap(line, in_axes = (0, 0, None))(p1, p2, segs)
 
 @jax.jit
 def polyline(pl: Matrix) -> Tensor:
@@ -30,5 +32,7 @@ def polyline(pl: Matrix) -> Tensor:
 
     return c
 
-vpolyline = jax.jit(jax.vmap(polyline, in_axes = 0))
 
+@jax.jit
+def vpolyline(pl: Tensor) -> Tensor: 
+    return jax.vmap(polyline, in_axes = (0,))

@@ -16,20 +16,25 @@ def normal(basis: Matrix) -> Vector:
     nrm = jnp.where(check < 0, -normal, normal)
     return us.div(nrm, (jnp.linalg.norm(nrm)))
 
-vnormal = jax.jit(jax.vmap(normal, in_axes = (0)))
+@jax.jit
+def vnormal(basis: Tensor) -> Matrix | Tensor: 
+    return jax.vmap(normal, in_axes=(0,))(basis)
 
 #dot product territory
-
-def project_scalar(a, b): 
+@jax.jit
+def project_scalar(a: Vector, b: Vector) -> Scalar: 
     
     norm = jnp.linalg.norm(b)
     prod = us.div(jnp.dot(a, b), norm)
 
     return prod
 
-scalproj = jax.jit(jax.vmap(project_scalar, in_axes = (0, 0)))
+@jax.jit
+def scalproj(a: Matrix, b: Matrix) -> Vector:
+    return jax.vmap(project_scalar, in_axes = (0, 0))(a, b)
 
-def project_vector(a, b):
+@jax.jit
+def project_vector(a: Vector, b: Vector) -> Vector:
 
     term = jnp.dot(b, b)
     prod = us.div(jnp.dot(a, b), term)
@@ -37,14 +42,18 @@ def project_vector(a, b):
 
     return proj
 
-vectproj = jax.jit(jax.vmap(project_vector, in_axes = (0, 0)))
+@jax.jit
+def vectproj(a: Matrix, b: Matrix) -> Matrix:
+    return jax.vmap(project_vector, in_axes = (0, 0))(a, b)
 
-
-def reject_vector(a, b):
+@jax.jit
+def reject_vector(a: Vector, b: Vector) -> Vector:
 
     proj = project_vector(a, b)
     reject = a - proj
 
     return reject
 
-rejvect = jax.jit(jax.vmap(reject_vector, in_axes = (0, 0)))
+@jax.jit
+def rejvect(a: Matrix, b: Matrix) -> Matrix:
+    return jax.vmap(reject_vector, in_axes = (0, 0))(a, b)
