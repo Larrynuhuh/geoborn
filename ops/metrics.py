@@ -1,10 +1,11 @@
 import geoutils as us
 import jax 
 import jax.numpy as jnp
-import vectors as vct
+from ops import vectors as vct
+from geoutils import Vector, Matrix, Scalar, Tensor
 
 @jax.jit
-def linlen(l):
+def linlen(l: Matrix) -> Scalar:
     
     diff = jnp.diff(l, axis = 0)
     lens = jnp.linalg.norm(diff, axis = 1)
@@ -13,11 +14,13 @@ def linlen(l):
     return sums
 
 
-def midp(p1, p2):
+def midp(p1: Vector, p2: Vector) -> Vector:
     mid = (p1 + p2) / 2.0
     return mid
 
-vmidp = jax.jit(jax.vmap(midp))
+@jax.jit
+def vmidp(p1: Matrix, p2: Matrix) -> Matrix:
+    return jax.vmap(midp, in_axes=(0,0))(p1, p2)
 
 
 # to check distance of point from line
@@ -36,7 +39,7 @@ def segdist(f, g, pt):
 
 # USER CALLS PLDIST
 @jax.jit
-def pldist(l, pt):
+def pldist(l: Matrix, pt: Vector) -> Scalar:
     a = l[:-1]
     b = l[1:]
 
@@ -45,11 +48,12 @@ def pldist(l, pt):
 
     return jnp.min(summed)
 
-
-vpldist = jax.jit(jax.vmap(pldist, in_axes = (None, 0)))
+@jax.jit
+def vpldist(l: Tensor, pt: Matrix) -> Vector:
+    return jax.vmap(pldist, in_axes = (0, 0))(l, pt)
 
 @jax.jit
-def sdf(l, pt):
+def sdf(l: Matrix, pt: Vector) -> Scalar:
     
     a = l[:-1]
     b = l[1:]
@@ -70,10 +74,6 @@ def sdf(l, pt):
 
     return cdist * sign 
 
-
-# TESTING
-
-l = jnp.array([[0,0], [1,1], [2,0]])
-p = jnp.array([1.0, 0.5])
-
-print(sdf(l, p))
+@jax.jit
+def vsdf(l: Tensor, pt: Matrix) -> Vector:
+    return jax.vmap(sdf, in_axes = (0, 0))(l, pt)

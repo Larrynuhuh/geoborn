@@ -1,9 +1,10 @@
 import geoutils as us
 import jax 
 import jax.numpy as jnp
+from geoutils import Vector, Matrix, Scalar, Tensor
 
-@jax.jit
-def points(*dimens):
+@jax.jit(static_argnums = (0,))
+def points(*dimens: int) -> Matrix: 
 
     state = jnp.meshgrid(*dimens, indexing = 'ij')
     p = jnp.stack(state, axis = -1)
@@ -11,18 +12,20 @@ def points(*dimens):
 
     return c
 
-@jax.jit
-def line(p1, p2, segs):
+@jax.jit(static_argnums = (2,))
+def line(p1: Vector, p2: Vector, segs: int) -> Matrix:
     t = jnp.linspace(0, 1, segs)[:, jnp.newaxis]
 
     l = p1 + (t * (p2 - p1))
 
     return l
 
-vline = jax.vmap(line)
+@jax.jit(static_argnums = (2,))
+def vline(p1: Matrix, p2: Matrix, segs: int) -> Tensor:
+    return jax.vmap(line, in_axes = (0, 0, None))(p1, p2, segs)
 
 @jax.jit
-def polyline(pl):
+def polyline(pl: Matrix) -> Tensor:
     a = pl[:-1]
     b = pl[1:]
     c = jnp.stack([a, b], axis = 1)
@@ -30,10 +33,6 @@ def polyline(pl):
     return c
 
 
-pts = jnp.array([[0.0, 10.0], [5.0, 0.0], [10.0, 10.0]])
-segments = geo.polyline(pts)
-ship = jnp.array([5.0, 5.0])
-
-d = geo.pldist(segments, ship)
-
-print("distance to v tip: {d}")
+@jax.jit
+def vpolyline(pl: Tensor) -> Tensor: 
+    return jax.vmap(polyline, in_axes = (0,))
