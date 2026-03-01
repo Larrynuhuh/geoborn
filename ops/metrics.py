@@ -1,7 +1,7 @@
 import geoutils as us
 import jax 
 import jax.numpy as jnp
-import vectors as vct
+from ops import vectors as vct
 
 @jax.jit
 def linlen(l):

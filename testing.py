@@ -2,9 +2,24 @@ import geoutils as us
 import jax
 import jax.numpy as jnp
 
-# Check if your 64-bit utils flag actually kicked in
-x = jnp.array([1.0])
-print(f"Dtype: {x.dtype}") 
-print(f"JAX Config x64: {jax.config.read('jax_enable_x64')}")
+from ops import vectors as vct
 
-print(us.div(8, 0))
+triangle = jnp.array([
+        [0.0, 0.0, 0.0],
+        [1.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0]
+    ])
+
+
+result_normal = vct.normal(triangle)
+
+
+print(f"Input Shape: {triangle.shape}")   # Should be (3, 3)
+print(f"Output Normal: {result_normal}")  # Should be [0, 0, 1] or [0, 0, -1]
+print(f"Output Shape: {result_normal.shape}")
+
+
+batch_triangles = jnp.stack([triangle, triangle]) 
+batch_normals = vct.vnormal(batch_triangles)
+
+print(f"Batch Output Shape: {batch_normals.shape}")

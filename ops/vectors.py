@@ -2,9 +2,10 @@
 import geoutils as us
 import jax 
 import jax.numpy as jnp
+from geoutils import Vector, Matrix, Scalar, Tensor
 
 @jax.jit
-def normal(basis):
+def normal(basis: Matrix) -> Vector:
     center = jnp.mean(basis, axis = 0)
     cb = basis - center
 
@@ -30,10 +31,9 @@ scalproj = jax.jit(jax.vmap(project_scalar, in_axes = (0, 0)))
 
 def project_vector(a, b):
 
-    norm = jnp.linalg.norm(b)
-    prod = us.div(jnp.dot(a, b), norm)
-    term = us.div(b, norm)
-    proj = prod * term
+    term = jnp.dot(b, b)
+    prod = us.div(jnp.dot(a, b), term)
+    proj = prod * b
 
     return proj
 
