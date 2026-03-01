@@ -71,9 +71,4 @@ def sdf(l, pt):
     return cdist * sign 
 
 
-# TESTING
-
-l = jnp.array([[0,0], [1,1], [2,0]])
-p = jnp.array([1.0, 0.5])
-
-print(sdf(l, p))
+vsdf = jax.jit(jax.vmap(sdf, in_axes = (0, 0)))
