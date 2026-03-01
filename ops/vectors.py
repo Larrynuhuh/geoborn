@@ -15,7 +15,7 @@ def normal(basis):
     nrm = jnp.where(check < 0, -normal, normal)
     return us.div(nrm, (jnp.linalg.norm(nrm)))
 
-vnormal = jax.jit(jax.vmap(normal))
+vnormal = jax.jit(jax.vmap(normal, in_axes = (0)))
 
 #dot product territory
 

@@ -1,6 +1,7 @@
 import geoutils as us
 import jax 
 import jax.numpy as jnp
+import vectors as vct
 
 @jax.jit
 def linlen(l):
@@ -16,7 +17,7 @@ def midp(p1, p2):
     mid = (p1 + p2) / 2.0
     return mid
 
-vmidp = jax.vmap(midp)
+vmidp = jax.jit(jax.vmap(midp))
 
 
 # to check distance of point from line
@@ -39,12 +40,40 @@ def pldist(l, pt):
     a = l[:-1]
     b = l[1:]
 
-    curve_dist = jax.vmap(segdist, in_axes = (0, 0, None))
+    curve_dist = jax.jit(jax.vmap(segdist, in_axes = (0, 0, None)))
     summed = curve_dist(a, b, pt)
 
     return jnp.min(summed)
 
 
-vpldist = jax.vmap(pldist, in_axes = (None, 0))
+vpldist = jax.jit(jax.vmap(pldist, in_axes = (None, 0)))
+
+@jax.jit
+def sdf(l, pt):
+    
+    a = l[:-1]
+    b = l[1:]
+
+    dist_func = jax.vmap(segdist, in_axes = (0, 0, None))
+    dists = dist_func(a, b, pt)
+
+    cidx = jnp.argmin(dists)
+    cdist = dists[cidx]
+
+    cseg = jnp.stack([a[cidx], b[cidx]])
+    norm = vct.normal(cseg)
+
+    mid = (a[cidx] + b[cidx])/2.0
+    direction = pt - mid
+    
+    sign = jnp.sign(jnp.dot(direction, norm))
+
+    return cdist * sign 
 
 
+# TESTING
+
+l = jnp.array([[0,0], [1,1], [2,0]])
+p = jnp.array([1.0, 0.5])
+
+print(sdf(l, p))
