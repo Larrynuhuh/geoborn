@@ -5,8 +5,7 @@ config.update("jax_enable_x64", True)
 
 import jax
 import jax.numpy as jnp
-from jax import Array
-from jax.typing import ArrayLike
+from jaxtyping import Float64, Array
 
 @jax.jit
 def div(a, b):
@@ -19,7 +18,7 @@ def div(a, b):
 eps = 1e-15
 
 
-type Vector = Array # 1D [1, 2]
-type Matrix = Array # 2D [[1, 2], [2, 1]]
-type Scalar = Array # 0D [1]
-type Tensor = Array # N-D
+type Scalar = Float64[Array, ""] # 0D [1]
+type Vector = Float64[Array, "N"] # 1D [1, 2]
+type Matrix = Float64[Array, "M N"] # 2D [[1, 2], [2, 1]]
+type Tensor = Float64[Array, "*batch M N O"] # 3-D+

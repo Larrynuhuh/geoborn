@@ -4,7 +4,7 @@ import jax.numpy as jnp
 from geoutils import Vector, Matrix, Scalar, Tensor
 
 @jax.jit(static_argnums = (0,))
-def points(*dimens: int) -> Matrix: 
+def points(*dimens: Vector) -> Matrix: 
 
     state = jnp.meshgrid(*dimens, indexing = 'ij')
     p = jnp.stack(state, axis = -1)

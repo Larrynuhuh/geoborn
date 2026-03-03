@@ -1,7 +1,7 @@
 import geoutils as us
 import jax 
 import jax.numpy as jnp
-from ops import vectors as vct
+from manifolds import vectors as vct
 from geoutils import Vector, Matrix, Scalar, Tensor
 
 @jax.jit
