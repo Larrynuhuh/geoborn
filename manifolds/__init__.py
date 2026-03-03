@@ -1,4 +1,4 @@
-from .metrics import (linlen,
+from .topology import (linlen,
  midp, vmidp, 
  pldist, vpldist, 
  sdf, vsdf
