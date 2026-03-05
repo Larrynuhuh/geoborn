@@ -11,14 +11,17 @@ def normal(g: Matrix, basis: Matrix) -> Vector:
     center = jnp.mean(basis, axis = 0)
     cbf = basis - center
 
-    sg = g + jnp.eye(g.shape[-1]) * 1e-12
+    eigval, eigvect = jnp.linalg.eigh(g)
+    s = eigval > 0
+    seigval = jnp.where(s, jnp.sqrt(eigval), 0.0)
 
-    l = jnp.linalg.cholesky(sg)
+    l = eigvect @ jnp.diag(seigval) @ eigvect.T
+    
     cb = cbf @ l
 
     u, s, vh = jnp.linalg.svd(cb, full_matrices = False)
-    normal = vh[-1]
-    n_mani = jnp.linalg.solve(l.T, normal)
+    raw_norm = vh[-1]
+    n_mani = jnp.linalg.pinv(l.T) @ raw_norm
 
     check = mtc.iprod(g, n_mani, center)
     nrm = jnp.where(check < 0, -n_mani, n_mani)

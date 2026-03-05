@@ -15,26 +15,26 @@ def linlen(g: Matrix, l: Matrix) -> Scalar:
     return sums
 
 
-def midp(g: Matrix, p1: Vector, p2: Vector) -> Vector:
+def midp(p1: Vector, p2: Vector) -> Vector:
     mid = (p1 + p2) / 2.0
     return mid
 
 @jax.jit
-def xmidp(g: Matrix, p1: Matrix, p2: Matrix) -> Matrix:
-    return jax.vmap(midp, in_axes=(0,0,0))(g, p1, p2)
+def xmidp(p1: Matrix, p2: Matrix) -> Matrix:
+    return jax.vmap(midp, in_axes=(0,0,0))(p1, p2)
 
 
 # to check distance of point from line
 
 @jax.jit
-def segdist(g: Matrix, f, g, pt):
-    v = g-f
+def segdist(g: Matrix, f, h, pt):
+    v = h-f
     w = pt-f
     t = us.div(mtc.iprod(g,w,v),mtc.iprod(g,v,v))
     tc = jnp.clip(t, 0, 1)
 
     cp = f + tc * v
-    dist = mtc.norm(pt - cp)
+    dist = mtc.norm(g, pt - cp)
 
     return dist
 

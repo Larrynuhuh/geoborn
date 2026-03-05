@@ -1,6 +1,6 @@
 from .topology import (linlen,
- midp, vmidp, 
- pldist, vpldist, 
+ midp, xmidp, 
+ pldist, xpldist, 
  sdf, vsdf
 )
 
