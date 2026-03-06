@@ -15,7 +15,7 @@ def normal(g: Matrix, basis: Matrix) -> Vector:
     s = eigval > 0
     seigval = jnp.where(s, jnp.sqrt(eigval), 0.0)
 
-    l = eigvect @ jnp.diag(seigval) @ eigvect.T
+    l = jnp.einsum('ik, k, jk -> ij', eigvect, seigval, eigvect)
     
     cb = cbf @ l
 
@@ -25,11 +25,11 @@ def normal(g: Matrix, basis: Matrix) -> Vector:
 
     check = mtc.iprod(g, n_mani, center)
     nrm = jnp.where(check < 0, -n_mani, n_mani)
-    return us.div(nrm, (mtc.norm(g, nrm)))
+    return unitize(g, nrm)
 
 @jax.jit
 def xnormal(g: Matrix, basis: Tensor) -> Matrix | Tensor: 
-    return jax.vmap(normal, in_axes=(0, 0))(g, basis)
+    return jax.vmap(normal, in_axes=(None, 0))(g, basis)
 
 #dot product territory
 @jax.jit
@@ -68,3 +68,7 @@ def rejvect(g: Matrix, a: Vector, b: Vector) -> Vector:
 @jax.jit
 def xrejvect(g: Matrix, a: Matrix, b: Matrix) -> Matrix:
     return jax.vmap(rejvect, in_axes = (0, 0))(g, a, b)
+
+@jax.jit
+def unitize(g: Matrix, u: Vector) -> Vector: 
+    return us.div(u, mtc.norm(g, u))

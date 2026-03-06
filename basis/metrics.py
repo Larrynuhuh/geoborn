@@ -9,7 +9,9 @@ def euclid(x: Vector) -> Matrix:
 
 @jax.jit
 def iprod(g: Matrix, u: Vector, v: Vector) -> Scalar: 
-    return jnp.dot(u, jnp.dot(g, v))
+    return jnp.einsum('i, ij, j -> ', u, g, v)
+
+xiprod = jax.jit(jax.vmap(iprod, in_axes=(None, 0, 0)))
 
 @jax.jit
 def norm(g: Matrix, u: Vector) -> Scalar: 
@@ -20,10 +22,12 @@ def norm(g: Matrix, u: Vector) -> Scalar:
 def fwdmet(f, v: Vector) -> Matrix:
     J = jax.jacfwd(f)(v)
     nJ = J.reshape(-1, v.shape[-1])
-    return nJ.T @ nJ
+    return jnp.einsum('ai, aj -> ij', nJ, nJ)
 
 @jax.jit(static_argnums = (0,))
 def revmet(f, v: Vector) -> Matrix:
     J = jax.jacrev(f)(v)
     nJ = J.reshape(-1, v.shape[-1])
-    return nJ.T @ nJ
+    return jnp.einsum('ai, aj -> ij', nJ, nJ)
+
+
