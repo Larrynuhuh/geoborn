@@ -53,28 +53,3 @@ def pldist(g: Matrix, l: Matrix, pt: Vector) -> Scalar:
 def xpldist(l: Tensor, pt: Matrix) -> Vector:
     return jax.vmap(pldist, in_axes = (0, 0, 0))(g, l, pt)
 
-@jax.jit
-def sdf(l: Matrix, pt: Vector) -> Scalar:
-    
-    a = l[:-1]
-    b = l[1:]
-
-    dist_func = jax.vmap(segdist, in_axes = (0, 0, None))
-    dists = dist_func(a, b, pt)
-
-    cidx = jnp.argmin(dists)
-    cdist = dists[cidx]
-
-    cseg = jnp.stack([a[cidx], b[cidx]])
-    norm = vct.normal(cseg)
-
-    mid = (a[cidx] + b[cidx])/2.0
-    direction = pt - mid
-    
-    sign = jnp.sign(jnp.dot(direction, norm))
-
-    return cdist * sign 
-
-@jax.jit
-def vsdf(l: Tensor, pt: Matrix) -> Vector:
-    return jax.vmap(sdf, in_axes = (0, 0))(l, pt)
