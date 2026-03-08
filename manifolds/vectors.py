@@ -2,7 +2,7 @@
 import geoutils as us
 import jax 
 import jax.numpy as jnp
-from geoutils import Vector, Matrix, Scalar, Tensor
+from geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
 
 from basis import metrics as mtc
 
