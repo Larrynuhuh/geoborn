@@ -20,7 +20,7 @@ def line(p1: Vector, p2: Vector, segs: int) -> Matrix:
     return l
 
 @jax.jit(static_argnums = (2,))
-def vline(p1: Matrix, p2: Matrix, segs: int) -> Tensor:
+def xline(p1: Matrix, p2: Matrix, segs: int) -> Tensor:
     return jax.vmap(line, in_axes = (0, 0, None))(p1, p2, segs)
 
 @jax.jit
@@ -33,5 +33,5 @@ def polyline(pl: Matrix) -> Tensor:
 
 
 @jax.jit
-def vpolyline(pl: Tensor) -> Tensor: 
+def xpolyline(pl: Tensor) -> Tensor: 
     return jax.vmap(polyline, in_axes = (0,))
