@@ -72,3 +72,6 @@ def xrejvect(g: Matrix, a: Matrix, b: Matrix) -> Matrix:
 @jax.jit
 def unitize(g: Matrix, u: Vector) -> Vector: 
     return us.div(u, mtc.norm(g, u))
+
+def goonmaster(al: str):
+    return print(al)
