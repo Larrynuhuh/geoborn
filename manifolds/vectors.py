@@ -7,51 +7,29 @@ from geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
 from basis import metrics as mtc
 
 @jax.jit
-def pnrm(g: Matrix, basis: Matrix) -> Matrix:
-    center = jnp.mean(basis, axis=0)
-    centered = basis - center
-
-    Q, R = jnp.linalg.qr(basis.T, mode='complete')
-    rank = jnp.linalg.matrix_rank(centered)
-
-    r_norm = jnp.linalg.solve(g, Q)
+def nrm(g: Matrix, jacobian: Matrix) -> Matrix:
     
-    matrix = xunitize(g, r_norm)
+    n, k = jacobian.shape
+    # 1. Euclidean QR (The "Guess")
+    q, r = jnp.linalg.qr(jacobian, mode='complete')
+    tangents = q[:, :k]
+    raw_normals = q[:, k:] # This is what failed the test!
 
-    deter = jnp.linalg.det(matrix)
-
-    check = jnp.where(deter > 0.0, 1.0, -1.0)
-
-    nmat = matrix[:, rank:] * check
-
-    return nmat[:, rank:], rank
-
-@jax.jit
-def vnrm(g: Matrix, basis: Matrix) -> Matrix:
-
-    Q, R = jnp.linalg.qr(basis.T, mode='complete')
-    rank = jnp.linalg.matrix_rank(basis)
-
-    r_norm = jnp.linalg.solve(g, Q)
-
-    matrix = xunitize(g, r_norm)
+    # 2. THE RIEMANNIAN FIX (Metric-Projection)
+    # We find the part of raw_normals that 'leaks' into the tangent space
+    # in the warped metric g, and subtract it.
+    gram = tangents.T @ g @ tangents
+    # Solve: tangents.T @ g @ (raw_normals - tangents @ proj) = 0
+    proj = jnp.linalg.solve(gram, tangents.T @ g @ raw_normals)
     
-    deter = jnp.linalg.det(matrix)
-
-    check = jnp.where(deter > 0.0, 1.0, -1.0)
-
-    nmat = matrix[:, rank:] * check
-
-    return nmat[:, rank:], rank
-
-
-@jax.jit
-def xpnrm(g: Matrix, basis: Tensor) -> Matrix | Tensor: 
-    return jax.vmap(pnrm, in_axes=(0, 0))(g, basis)
-
-@jax.jit
-def xvnrm(g: Matrix, basis: Tensor) -> Matrix | Tensor: 
-    return jax.vmap(vnrm, in_axes=(0, 0))(g, basis)
+    # 3. The True Normal (Orthogonal in metric g)
+    true_normals = raw_normals - (tangents @ proj)
+    
+    # 4. Final Unitize using your mtc.norm
+    # This ensures the Riemannian Norm is exactly 1.0
+    unit_n = true_normals / mtc.norm(g, true_normals)
+    
+    return tangents, unit_n
 
 #dot product territory
 @jax.jit
