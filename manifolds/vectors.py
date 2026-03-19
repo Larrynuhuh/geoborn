@@ -15,7 +15,7 @@ def nrm(g: Matrix, basis: Matrix) -> Matrix:
     bflat = basis @ L.T 
 
     Q, R = jnp.linalg.qr(bflat.T) 
-    linvt = vecs/jnp.sqrt(vals) 
+    linvt = us.div(vecs, jnp.maximum(jnp.sqrt(vals), 0.0))
 
     ortho = Q.T @ linvt.T 
     det = jnp.linalg.det(ortho @ L.T) > 0 
