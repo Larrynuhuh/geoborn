@@ -18,7 +18,7 @@ def xiprod(g: Matrix, u: Matrix, v: Matrix) -> Vector:
 
 @jax.jit
 def norm(g: Matrix, u: Vector) -> Scalar: 
-    return jnp.sqrt(iprod(g, u, u))
+    return jnp.sqrt(jnp.maximum(iprod(g, u, u), 0.0))
 
 @jax.jit
 def xnorm(g: Matrix, u: Matrix) -> Vector: 
