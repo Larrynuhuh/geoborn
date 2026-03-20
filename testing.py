@@ -11,5 +11,3 @@ from numba import njit, prange
 import time
 
 
-
-    

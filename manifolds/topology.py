@@ -51,5 +51,5 @@ def pldist(g: Matrix, l: Matrix, pt: Vector) -> Scalar:
 
 @jax.jit
 def xpldist(g: Matrix, l: Tensor, pt: Matrix) -> Vector:
-    return jax.vmap(pldist, in_axes = (0, 0, 0))(g, l, pt)
+    return jax.vmap(pldist, in_axes = (None, None, 0))(g, l, pt)
 
