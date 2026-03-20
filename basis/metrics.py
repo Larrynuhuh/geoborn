@@ -7,12 +7,7 @@ from geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
 def euclid(x: Vector) -> Matrix:
     return jnp.eye(x.shape[-1])
 
-@jax.jit
-def iprod(g: Matrix, u: Vector, v: Vector) -> Scalar: 
-    return jnp.einsum('i, ij, j -> ', u, g, v)
-
-@jax.jit
-def xiprod(g: Matrix, u: Matrix, v: Matrix) -> Vector:
+def iprod(g: Matrix, u: Vector|Matrix, v: Vector|Matrix) -> Vector:
     return jnp.einsum('...i, ...ij, ...j -> ...', u, g, v)
 
 
@@ -20,9 +15,8 @@ def xiprod(g: Matrix, u: Matrix, v: Matrix) -> Vector:
 def norm(g: Matrix, u: Vector) -> Scalar: 
     return jnp.sqrt(jnp.maximum(iprod(g, u, u), 0.0))
 
-@jax.jit
-def xnorm(g: Matrix, u: Matrix) -> Vector: 
-    return jax.vmap(norm, in_axes=(None, 0))(g, u)
+def norm_sq(g: Matrix, u: Vector) -> Scalar: 
+    return jnp.maximum(iprod(g, u, u), 0.0)
 
 
 @jax.jit(static_argnums = (0,))

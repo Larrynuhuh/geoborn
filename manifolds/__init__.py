@@ -1,9 +1,9 @@
-from .topology import (linlen,
- midp, xmidp, 
- pldist, xpldist, 
+from .topology import (linlen, 
+ pldist, 
 )
 
 from .vectors import (nrm,
- scalproj, xscalproj, 
-vectproj, xvectproj, 
- rejvect, xrejvect)
+ scalproj, 
+vectproj, 
+ rejvect,
+ unitize)

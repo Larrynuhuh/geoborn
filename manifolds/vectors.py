@@ -6,7 +6,6 @@ from geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
 
 from basis import metrics as mtc
 
-@jax.jit
 def nrm(g: Matrix, basis: Matrix) -> Matrix:
 
     nvals, vecs = jnp.linalg.eigh(g)
@@ -27,7 +26,7 @@ def nrm(g: Matrix, basis: Matrix) -> Matrix:
     return northo
 
 #dot product territory
-@jax.jit
+
 def scalproj(g: Matrix, a: Vector, b: Vector) -> Scalar: 
     
     norm = mtc.norm(g, b)
@@ -35,11 +34,7 @@ def scalproj(g: Matrix, a: Vector, b: Vector) -> Scalar:
 
     return prod
 
-@jax.jit
-def xscalproj(g: Matrix, a: Matrix, b: Matrix) -> Vector:
-    return jax.vmap(scalproj, in_axes = (None, 0, 0))(g, a, b)
 
-@jax.jit
 def vectproj(g: Matrix, a: Vector, b: Vector) -> Vector:
 
     term = mtc.iprod(g, b, b)
@@ -48,11 +43,7 @@ def vectproj(g: Matrix, a: Vector, b: Vector) -> Vector:
 
     return proj
 
-@jax.jit
-def xvectproj(g: Matrix, a: Matrix, b: Matrix) -> Matrix:
-    return jax.vmap(vectproj, in_axes = (None, 0, 0))(g, a, b)
 
-@jax.jit
 def rejvect(g: Matrix, a: Vector, b: Vector) -> Vector:
 
     proj = vectproj(g, a, b)
@@ -60,14 +51,6 @@ def rejvect(g: Matrix, a: Vector, b: Vector) -> Vector:
 
     return reject
 
-@jax.jit
-def xrejvect(g: Matrix, a: Matrix, b: Matrix) -> Matrix:
-    return jax.vmap(rejvect, in_axes = (None, 0, 0))(g, a, b)
 
-@jax.jit
 def unitize(g: Matrix, u: Vector) -> Vector: 
     return us.div(u, mtc.norm(g, u))
-
-@jax.jit
-def xunitize(g: Matrix, u: Matrix) -> Matrix: 
-    return jax.vmap(unitize, in_axes=(None, 0))(g, u)

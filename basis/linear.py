@@ -3,7 +3,6 @@ import jax
 import jax.numpy as jnp
 from geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
 
-@jax.jit
 def grid(idx: JAXArray, dimens: tuple):
     fg = jnp.unravel_index(idx, dimens)
     g = fg[::-1]
@@ -11,7 +10,7 @@ def grid(idx: JAXArray, dimens: tuple):
 
     return ng
 
-@jax.jit(static_argnums = (2,))
+static_argnums = (2,)
 def line(p1: Vector, p2: Vector, segs: int) -> Matrix:
     t = jnp.linspace(0, 1, segs)[:, jnp.newaxis]
 
@@ -19,11 +18,10 @@ def line(p1: Vector, p2: Vector, segs: int) -> Matrix:
 
     return l
 
-@jax.jit(static_argnums = (2,))
+static_argnums = (2,)
 def xline(p1: Matrix, p2: Matrix, segs: int) -> Tensor:
     return jax.vmap(line, in_axes = (0, 0, None))(p1, p2, segs)
 
-@jax.jit
 def polyline(pl: Matrix) -> Tensor:
     a = pl[:-1]
     b = pl[1:]
@@ -32,6 +30,5 @@ def polyline(pl: Matrix) -> Tensor:
     return c
 
 
-@jax.jit
 def xpolyline(pl: Tensor) -> Tensor: 
     return jax.vmap(polyline, in_axes = (0,))
