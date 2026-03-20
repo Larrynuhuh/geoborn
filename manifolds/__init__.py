@@ -2,7 +2,7 @@ from .topology import (linlen,
  pldist, 
 )
 
-from .vectors import (nrm,
+from .vectors import (nrml,
  scalproj, 
 vectproj, 
  rejvect,

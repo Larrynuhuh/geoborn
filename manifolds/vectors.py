@@ -6,7 +6,7 @@ from geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
 
 from basis import metrics as mtc
 
-def nrm(g: Matrix, basis: Matrix) -> Matrix:
+def nrml(g: Matrix, basis: Matrix) -> Matrix:
 
     nvals, vecs = jnp.linalg.eigh(g)
     vals = jnp.maximum(nvals, 0.0)
