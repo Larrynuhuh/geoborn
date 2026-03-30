@@ -5,7 +5,6 @@ from geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
 
 from basis import metrics as mtc
 
-
 def christoffel(func, x: Vector) -> Matrix:
     
     g = mtc.fwdmet(func, x)
