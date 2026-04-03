@@ -48,11 +48,12 @@ def geoexp_solver(p: Vector, v: Vector, mapped_func) -> Vector:
         solver = diffrax.Tsit5(),
         t0=0,
         t1=1,
-        dt0=1e-3,
+        dt0=1e-2,
         y0=state,
         args = {'func': mapped_func},
         stepsize_controller = diffrax.PIDController(rtol=1e-8, atol=1e-10),
-        saveat=diffrax.SaveAt(t1=True)
+        saveat=diffrax.SaveAt(t1=True),
+        adjoint = diffrax.RecursiveCheckpointAdjoint()
     )
 
     result = solution.ys[0]
@@ -63,3 +64,27 @@ def geoexp_solver(p: Vector, v: Vector, mapped_func) -> Vector:
 
     return final_pos, final_vel
 
+def geolog_solver(p: Vector, q: Vector, mapped_func, steps: int) -> Vector:
+    
+    def shoot(v_guess):
+        pos, _ = geoexp_solver(p, v_guess, mapped_func)
+        return pos
+
+    v = q-p
+    J = jax.jacobian(shoot)(v)
+
+    def bodyfun(i, v):
+        error = shoot(v) - q
+        #J = jax.jacobian(shoot)(v)
+        delta = jnp.linalg.solve(J, error)
+        return v - delta
+
+    final_v = jax.lax.fori_loop(0, steps, bodyfun, v)
+    return final_v
+
+
+def geodist(p: Vector, q: Vector, mapped_func, steps: int) -> Scalar:
+    v = geolog_solver(p, q, mapped_func, steps)
+    g = mtc.fwdmet(mapped_func, p)
+    dist = mtc.norm(g, v)
+    return dist

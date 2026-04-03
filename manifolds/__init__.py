@@ -1,4 +1,4 @@
-from .calc import (christoffel, geoexp_term, geoexp_solver)
+from .calc import (christoffel, geoexp_solver, geolog_solver, geodist)
 
 from .vectors import (nrml,
  scalproj, 
