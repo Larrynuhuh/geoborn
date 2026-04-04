@@ -1,0 +1,15 @@
+README.md
+pyproject.toml
+src/xagm/__init__.py
+src/xagm/geoutils.py
+src/xagm.egg-info/PKG-INFO
+src/xagm.egg-info/SOURCES.txt
+src/xagm.egg-info/dependency_links.txt
+src/xagm.egg-info/requires.txt
+src/xagm.egg-info/top_level.txt
+src/xagm/basis/__init__.py
+src/xagm/basis/linear.py
+src/xagm/basis/metrics.py
+src/xagm/manifolds/__init__.py
+src/xagm/manifolds/calc.py
+src/xagm/manifolds/vectors.py
