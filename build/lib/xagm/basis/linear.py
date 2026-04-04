@@ -1,8 +1,8 @@
-from xagm import geoutils as us
+import geoutils as us
 import jax 
 import jax.numpy as jnp
-from xagm.geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
-from xagm.basis import metrics as mtc
+from geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
+from basis import metrics as mtc
 
 def grid(idx: JAXArray, dimens: tuple):
     fg = jnp.unravel_index(idx, dimens)

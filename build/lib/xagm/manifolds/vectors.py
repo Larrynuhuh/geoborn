@@ -1,9 +1,10 @@
-from xagm import geoutils as us
+
+import geoutils as us
 import jax 
 import jax.numpy as jnp
-from xagm.geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
+from geoutils import Vector, Matrix, Scalar, Tensor, JAXArray
 
-from xagm.basis import metrics as mtc
+from basis import metrics as mtc
 
 def nrml(g: Matrix, basis: Matrix) -> Matrix:
 
